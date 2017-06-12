@@ -1,0 +1,54 @@
+---
+- name: SETUP | Create data folder
+  file:
+    path: "{{ taskd_data_location }}"
+    owner: "{{ taskd_user }}"
+    group: "{{ taskd_group }}"
+    mode: 0644
+    state: directory
+
+- name: SETUP | Init datafolder
+  command: "taskd init --data {{ taskd_data_location }}"
+
+- name: SETUP | Set correct CN in vars file
+  lineinfile:
+    path: "{{ taskd_install_location }}/pki/vars"
+    regexp: "^CN="
+    line: "CN={{ taskd_hostname }}"
+
+- block:
+    - name: SETUP | Move init script for using systemd
+      template:
+        src: taskd/task.service.jinja2
+        dest: /lib/systemd/system/taskd.service
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: SETUP | Autostart taskd and restart service
+      systemd:
+        name: taskd
+        enabled: yes
+        daemon_reload: yes
+      notify: restart taskd
+
+  when: (ansible_distribution == 'Ubuntu' and ansible_distribution_version >= '16.04') or (ansible_distribution == 'Centos' and ansible_distribution_version == '7')
+
+#TODO: Make init-script
+- block:
+    - name: SETUP | Move init script for centos versions
+      file:
+        src: taskd/taskd-init.jinja2"
+        dest: /etc/init.d/taskd
+        owner: root
+        group: root
+        mode: 0744
+        state: link
+
+    - name: SETUP | Autostart Plexpy and restart service
+      service:
+        name: taskd
+        enabled: yes
+      notify: restart taskd
+
+  when: ansible_distribution == 'Centos' and ansible_distribution_version == '6'

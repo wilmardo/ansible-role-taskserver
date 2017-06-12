@@ -1,0 +1,21 @@
+---
+taskd_yum_packages:
+  - cmake
+  - make
+  - gcc-c++
+  - gnutls-devel
+  - libuuid-devel
+
+taskd_ubuntu_packages:
+  - cmake
+  - make
+  - g++
+  - libgnutls-dev
+  - uuid-dev
+  - curl
+
+taskd_download_location: /root/
+taskd_install_location: /opt/taskd/
+taskd_data_location: /var/taskd
+taskd_user: taskd
+taskd_group: taskd

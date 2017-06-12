@@ -1,0 +1,8 @@
+---
+- fail:
+    msg: "taskd_hostname undefined, please define in the playbook or host_vars"
+  when: taskd_hostname is undefined
+
+- include: prerequisite.yml
+- include: install.yml
+- include: setup.yml

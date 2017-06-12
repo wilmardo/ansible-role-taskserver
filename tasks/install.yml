@@ -1,0 +1,67 @@
+---
+- name: INSTALL | Create taskd group
+  group:
+    name: "{{ taskd_group }}"
+    state: present
+
+- name: INSTALL | Create taskd user
+  user:
+    name: "{{ taskd_user }}"
+    group: "{{ taskd_group }}"
+    state: present
+
+- name: INSTALL | Download taskd-server tarball
+  get_url:
+    url: https://taskwarrior.org/download/taskd-latest.tar.gz
+    dest: "{{ taskd_download_location }}/taskd-latest.tar.gz"
+    checksum: sha1:ded339deeee65277e4712f71a9159502f8b20b52
+
+- name: INSTALL | Create install directory
+  file:
+    path: "{{ taskd_install_location }}"
+    owner: "{{ taskd_user }}"
+    group: "{{ taskd_group }}"
+    mode: 0755
+    state: directory
+
+#TODO: replace with untar to directory, removes the need of the dir_name var
+- name: INSTALL | Untar taskd-server tarball
+  command: tar xf {{ taskd_download_location }}/taskd-latest.tar.gz -C {{ taskd_install_location }} --strip-components 1
+
+- name: INSTALL | Remove packed taskd-server tarball
+  file:
+    path: "{{ taskd_download_location }}/taskd-latest.tar.gz"
+    state: absent
+
+- name: INSTALL | Cmake taskd-server
+  command: cmake -DCMAKE_BUILD_TYPE=release .
+  args:
+    chdir: "{{ taskd_install_location }}"
+
+- name: INSTALL | Make taskd-server
+  command: make
+  args:
+    chdir: "{{ taskd_install_location }}"
+
+- name: INSTALL | Make install taskd-server
+  command: make install
+  args:
+    chdir: "{{ taskd_install_location }}"
+
+#TODO: PR this to taskwarrior
+- name: INSTALL | Create symlink for taskdctl to standard Centos $PATH dir
+  file:
+    src: /usr/local/bin/taskd
+    path: /usr/bin/taskd
+    state: link
+
+- name: INSTALL | Create symlink for taskd to standard Centos $PATH dir
+  file:
+    src: /usr/local/bin/taskdctl
+    path: /usr/bin/taskdctl
+    state: link
+
+#TODO: not nice, fix something with type? https://stackoverflow.com/questions/592620/check-if-a-program-exists-from-a-bash-script#677212
+- fail:
+    msg: "Make install did not complete correct see the following output: \n\n {{ taskd_make_install_output }}"
+  when: "taskd_make_output.stdout.find('-- Installing: /usr/local/share/man/man5/taskdrc.5') != -1"
