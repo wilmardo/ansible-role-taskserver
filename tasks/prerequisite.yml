@@ -16,7 +16,5 @@
         state: latest
         update_cache: yes
       with_items: "{{ taskd_apt_packages }}"
-      environment:
-        MAKEFLAGS: "-j {{ ansible_processor_cores }}"
 
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
