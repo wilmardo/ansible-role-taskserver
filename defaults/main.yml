@@ -4,6 +4,7 @@ taskd_yum_packages:
   - make
   - gcc-c++
   - gnutls-devel
+  - gnutls-utils
   - libuuid-devel
 
 taskd_ubuntu_packages:
@@ -14,8 +15,28 @@ taskd_ubuntu_packages:
   - uuid-dev
   - curl
 
-taskd_download_location: /root/
-taskd_install_location: /opt/taskd/
-taskd_data_location: /var/taskd
+# Variables for Taskd
 taskd_user: taskd
 taskd_group: taskd
+taskd_port: 53589
+taskd_download_location: /root
+taskd_install_location: /opt/taskd
+taskd_data_location: /var/taskd
+taskd_user_cert_location: /var/taskd/user_certs
+
+# Variables for ssl certs (defaults for selfsigned)
+taskd_client_cert: "{{ taskd_data_location }}/client.cert.pem"
+taskd_client_key: "{{ taskd_data_location }}/client.key.pem"
+taskd_server_cert: "{{ taskd_data_location }}/server.cert.pem"
+taskd_server_key: "{{ taskd_data_location }}/server.key.pem"
+taskd_server_crl: "{{ taskd_data_location }}/server.crl.pem"
+taskd_ca_cert: "{{ taskd_data_location }}/ca.cert.pem"
+
+# Variables for selfsinging
+taskd_selfsigned: false
+taskd_selfsigned_bits: 4096
+taskd_selfsigned_expiration_days: 365
+taskd_selfsigned_organization: Göteborg Bit Factory
+taskd_selfsigned_country: SE
+taskd_selfsigned_state: Västra Götaland
+taskd_selfsigned_locality: Göteborg

@@ -1,0 +1,24 @@
+---
+- name: USERS | Create users.conf when nonexisting
+  file:
+    path: "{{ taskd_data_location }}/users.conf"
+    state: touch
+
+- name: USERS | Create variable containing users.conf
+  command: "cat {{ taskd_data_location }}/users.conf"
+  register: taskd_users_conf
+
+- include: add_organization.yml
+  with_items: "{{ taskd_organizations }}"
+  loop_control:
+    loop_var: outer_item
+
+- name: USERS | Create user certs folder
+  file:
+    path: "{{ taskd_user_cert_location }}"
+    state: directory
+
+- include: add_user.yml
+  with_items: "{{ taskd_users }}"
+  loop_control:
+    loop_var: outer_item

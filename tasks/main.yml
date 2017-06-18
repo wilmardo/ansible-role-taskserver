@@ -1,8 +1,12 @@
 ---
 - fail:
-    msg: "taskd_hostname undefined, please define in the playbook or host_vars"
-  when: taskd_hostname is undefined
+    msg: "taskd_cn undefined, please define in the playbook or host_vars"
+  when:  taskd_selfsigned == true and taskd_selfsigned_cn is undefined
 
 - include: prerequisite.yml
 - include: install.yml
 - include: setup.yml
+- include: users.yml
+  when: taskd_organizations is defined and taskd_users is defined
+  tags:
+  - users

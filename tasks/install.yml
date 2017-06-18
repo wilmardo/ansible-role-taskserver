@@ -10,6 +10,7 @@
     group: "{{ taskd_group }}"
     state: present
 
+#TODO: make more efficient, only download and make when version diffrent?
 - name: INSTALL | Download taskd-server tarball
   get_url:
     url: https://taskwarrior.org/download/taskd-latest.tar.gz
@@ -24,9 +25,12 @@
     mode: 0755
     state: directory
 
-#TODO: replace with untar to directory, removes the need of the dir_name var
 - name: INSTALL | Untar taskd-server tarball
-  command: tar xf {{ taskd_download_location }}/taskd-latest.tar.gz -C {{ taskd_install_location }} --strip-components 1
+  unarchive:
+    src: "{{ taskd_download_location }}/taskd-latest.tar.gz"
+    dest: "{{ taskd_install_location }}"
+    remote_src: true
+    extra_opts: ['--strip-components=1']
 
 - name: INSTALL | Remove packed taskd-server tarball
   file:
@@ -48,6 +52,13 @@
   args:
     chdir: "{{ taskd_install_location }}"
 
+- name: INSTALL | Set permanent $TASKDDATA system variable
+  lineinfile:
+    path: "/etc/environment"
+    line: "export TASKDDATA={{ taskd_data_location }}"
+    state: present
+    insertafter: eof
+
 #TODO: PR this to taskwarrior
 - name: INSTALL | Create symlink for taskdctl to standard Centos $PATH dir
   file:
@@ -61,7 +72,4 @@
     path: /usr/bin/taskdctl
     state: link
 
-#TODO: not nice, fix something with type? https://stackoverflow.com/questions/592620/check-if-a-program-exists-from-a-bash-script#677212
-- fail:
-    msg: "Make install did not complete correct see the following output: \n\n {{ taskd_make_install_output }}"
-  when: "taskd_make_output.stdout.find('-- Installing: /usr/local/share/man/man5/taskdrc.5') != -1"
+#TODO: Fix something with type? https://stackoverflow.com/questions/592620/check-if-a-program-exists-from-a-bash-script#677212

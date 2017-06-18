@@ -1,0 +1,4 @@
+---
+- name: USERS | Add organizations
+  command: "taskd add org '{{ outer_item }}'"
+  when: taskd_users_conf.stdout.find(outer_item) == -1 # When organization not found in users.conf
