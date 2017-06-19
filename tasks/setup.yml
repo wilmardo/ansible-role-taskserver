@@ -13,7 +13,7 @@
 - block:
     - name: SETUP | Copy selfsigning vars file to location
       template:
-        src: templates/taskd/ssl_vars.jinja2
+        src: ssl_vars.jinja2
         dest: "{{ taskd_install_location }}/pki/vars"
         owner: "{{ taskd_user }}"
         group: "{{ taskd_group }}"
@@ -47,44 +47,7 @@
 
 - name: SETUP | Create config file for taskd
   template:
-    src: taskd/taskd_config.jinja2
+    src: taskd_config.jinja2
     dest: "{{ taskd_data_location }}/config"
     owner: "{{ taskd_user }}"
     group: "{{ taskd_group }}"
-
-- block:
-    - name: SETUP | Move systemd script
-      template:
-        src: taskd/taskd.service.jinja2
-        dest: /lib/systemd/system/taskd.service
-        owner: root
-        group: root
-        mode: 0644
-
-    - name: SETUP | Autostart taskd and restart service
-      systemd:
-        name: taskd
-        enabled: yes
-        daemon_reload: yes
-      notify: restart taskd
-
-  when: (ansible_distribution == 'Ubuntu' and ansible_distribution_version >= '16.04') or (ansible_distribution == 'Centos' and ansible_distribution_version == '7')
-
-#TODO: Make init-script
-- block:
-    - name: SETUP | Move init script for Centos 6
-      file:
-        src: taskd/taskd-init.jinja2"
-        dest: /etc/init.d/taskd
-        owner: root
-        group: root
-        mode: 0744
-        state: link
-
-    - name: SETUP | Autostart taskd and restart service
-      service:
-        name: taskd
-        enabled: yes
-      notify: restart taskd
-
-  when: ansible_distribution == 'Centos' and ansible_distribution_version == '6'

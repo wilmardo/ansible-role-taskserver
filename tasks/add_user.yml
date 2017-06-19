@@ -15,7 +15,7 @@
         - 'cert.pem'
         - 'key.pem'
 
-    - name: Users | Append created user to users.conf
+    - name: USERS | Append created user to users.conf
       blockinfile:
         path: "{{ taskd_data_location }}/users.conf"
         state: present

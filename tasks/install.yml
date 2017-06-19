@@ -9,6 +9,7 @@
     name: "{{ taskd_user }}"
     group: "{{ taskd_group }}"
     state: present
+    createhome: no
 
 #TODO: make more efficient, only download and make when version diffrent?
 - name: INSTALL | Download taskd-server tarball
@@ -58,6 +59,45 @@
     line: "export TASKDDATA={{ taskd_data_location }}"
     state: present
     insertafter: eof
+
+
+- block:
+    - name: SETUP | Move systemd script
+      template:
+        src: taskd.service.jinja2
+        dest: /lib/systemd/system/taskd.service
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: SETUP | Autostart taskd and restart service
+      systemd:
+        name: taskd
+        enabled: yes
+        daemon_reload: yes
+      notify: restart taskd
+
+  when: (ansible_distribution == 'Ubuntu' and ansible_distribution_version >= '16.04') or (ansible_distribution == 'Centos' and ansible_distribution_version == '7')
+
+#TODO: Make init-script
+- block:
+    - name: SETUP | Move init script for Centos 6
+      file:
+        src: taskd/taskd-init.jinja2"
+        dest: /etc/init.d/taskd
+        owner: root
+        group: root
+        mode: 0744
+        state: link
+
+    - name: SETUP | Autostart taskd and restart service
+      service:
+        name: taskd
+        enabled: yes
+      notify: restart taskd
+
+  when: ansible_distribution == 'Centos' and ansible_distribution_version == '6'
+
 
 #TODO: PR this to taskwarrior
 - name: INSTALL | Create symlink for taskdctl to standard Centos $PATH dir
