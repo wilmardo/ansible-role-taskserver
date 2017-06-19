@@ -77,11 +77,11 @@
         daemon_reload: yes
       notify: restart taskd
 
-  when: (ansible_distribution == 'Ubuntu' and ansible_distribution_version >= '16.04') or (ansible_distribution == 'Centos' and ansible_distribution_version == '7')
+  when: (ansible_distribution == 'Ubuntu' and ansible_distribution_version >= '16.04') or (ansible_distribution == 'CentOS' and ansible_distribution_major_version == '7')
 
 #TODO: Make init-script
 - block:
-    - name: SETUP | Move init script for Centos 6
+    - name: SETUP | Move init script for CentOS 6
       file:
         src: taskd/taskd-init.jinja2"
         dest: /etc/init.d/taskd
@@ -96,20 +96,21 @@
         enabled: yes
       notify: restart taskd
 
-  when: ansible_distribution == 'Centos' and ansible_distribution_version == '6'
+  when: ansible_distribution == 'CentOS' and ansible_distribution_major_version == '6'
 
 
 #TODO: PR this to taskwarrior
-- name: INSTALL | Create symlink for taskdctl to standard Centos $PATH dir
-  file:
-    src: /usr/local/bin/taskd
-    path: /usr/bin/taskd
-    state: link
+- block:
+    - name: INSTALL | Create symlink for taskdctl to standard CentOS $PATH dir
+      file:
+        src: /usr/local/bin/taskd
+        path: /usr/bin/taskd
+        state: link
 
-- name: INSTALL | Create symlink for taskd to standard Centos $PATH dir
-  file:
-    src: /usr/local/bin/taskdctl
-    path: /usr/bin/taskdctl
-    state: link
+    - name: INSTALL | Create symlink for taskd to standard CentOS $PATH dir
+      file:
+        src: /usr/local/bin/taskdctl
+        path: /usr/bin/taskdctl
+        state: link
 
-#TODO: Fix something with type? https://stackoverflow.com/questions/592620/check-if-a-program-exists-from-a-bash-script#677212
+  when: ansible_distribution == 'CentOS'
