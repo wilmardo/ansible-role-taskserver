@@ -5,11 +5,11 @@ After=network.target
 Documentation=http://taskwarrior.org/docs/#taskd
 
 [Service]
-ExecStart=/usr/local/bin/taskd server --data {{ taskd_data_folder }}
+ExecStart=/usr/local/bin/taskd server --data {{ taskd_data_location }}
 Type=simple
 User={{ taskd_user }}
 Group={{ taskd_group }}
-WorkingDirectory={{ taskd_data_folder }}
+WorkingDirectory={{ taskd_data_location }}
 PrivateTmp=true
 InaccessibleDirectories=/home /root /boot /opt /mnt /media
 ReadOnlyDirectories=/etc /usr
