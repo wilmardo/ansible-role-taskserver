@@ -4,11 +4,13 @@
     path: "{{ taskd_data_location }}"
     owner: "{{ taskd_user }}"
     group: "{{ taskd_group }}"
-    mode: 0644
+    mode: 0755
     state: directory
 
 - name: SETUP | Init datafolder
   command: "taskd init"
+  become: yes
+  become_user: "{{ taskd_user }}"
 
 - block:
     - name: SETUP | Copy selfsigning vars file to location
@@ -22,6 +24,8 @@
       shell: ./generate
       args:
         chdir: "{{ taskd_install_location }}/pki/"
+      become: yes
+      become_user: "{{ taskd_user }}"
 
     - wait_for:
         path: "{{ taskd_install_location }}/pki/{{ item }}"
@@ -42,6 +46,8 @@
         - server.key.pem
         - server.crl.pem
         - ca.cert.pem
+      become: yes
+      become_user: "{{ taskd_user }}"
 
   when: taskd_selfsigned == true
 

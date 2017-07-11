@@ -6,6 +6,7 @@ taskd_yum_packages:
   - gnutls-devel
   - gnutls-utils
   - libuuid-devel
+  - which #workaround until taskd 1.2 then generate script fixed
 
 taskd_ubuntu_packages:
   - cmake
@@ -22,7 +23,8 @@ taskd_port: 53589
 taskd_download_location: /root
 taskd_install_location: /opt/taskd
 taskd_data_location: /var/taskd
-taskd_user_cert_location: /var/taskd/user_certs
+taskd_user_conf_location: /var/taskd/users
+taskd_user_cert_location: /var/taskd/users/certs
 
 # Variables for ssl certs (defaults for selfsigned)
 taskd_client_cert: "{{ taskd_data_location }}/client.cert.pem"

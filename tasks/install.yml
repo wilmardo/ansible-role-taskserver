@@ -53,13 +53,20 @@
   args:
     chdir: "{{ taskd_install_location }}"
 
+- name: INSTALL | Set file permissions in the install folder
+  file:
+    dest: "{{ taskd_install_location }}"
+    owner: "{{ taskd_user }}"
+    group: "{{ taskd_group }}"
+    recurse: yes
+
 - name: INSTALL | Set permanent $TASKDDATA system variable
   lineinfile:
     path: "/etc/environment"
     line: "export TASKDDATA={{ taskd_data_location }}"
+    regexp: "^export TASKDDATA="
     state: present
     insertafter: eof
-
 
 - block:
     - name: SETUP | Move systemd script
@@ -97,7 +104,6 @@
       notify: restart taskd
 
   when: ansible_distribution == 'CentOS' and ansible_distribution_major_version == '6'
-
 
 #TODO: PR this to taskwarrior
 - block:
