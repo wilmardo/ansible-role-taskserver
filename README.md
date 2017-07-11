@@ -1,4 +1,4 @@
-Taskserver [![Build Status](https://travis-ci.org/wilmardo/ansible-taskserver.svg?branch=master)](https://travis-ci.org/wilmardo/ansible-taskserver)
+Taskserver [![Build Status](https://travis-ci.org/wilmardo/ansible-role-taskserver.svg?branch=master)](https://travis-ci.org/wilmardo/ansible-role-taskserver)
 =========
 
 Ansible role to setup a taskserver for Taskwarrior
