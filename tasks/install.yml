@@ -60,7 +60,7 @@
     group: "{{ taskd_group }}"
     recurse: yes
 
-- name: INSTALL | Set permanent $TASKDDATA system variable
+- name: INSTALL | Set permanent system variables
   lineinfile:
     path: "/etc/environment"
     line: "export TASKDDATA={{ taskd_data_location }}"

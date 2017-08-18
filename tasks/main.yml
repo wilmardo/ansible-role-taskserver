@@ -10,3 +10,5 @@
   when: taskd_organizations is defined and taskd_users is defined
   tags:
   - users
+
+#TODO: Posibillity to regenerate (user) certs
