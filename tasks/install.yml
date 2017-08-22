@@ -12,11 +12,19 @@
     createhome: no
 
 #TODO: make more efficient, only download and make when version diffrent?
-- name: INSTALL | Download taskd-server tarball
+- name: INSTALL | Download taskd-server tarball (Centos >=7)
   get_url:
-    url: https://taskwarrior.org/download/taskd-latest.tar.gz
+    url: "https://{{ taskd_tarball_url }}"
     dest: "{{ taskd_download_location }}/taskd-latest.tar.gz"
-    checksum: sha1:ded339deeee65277e4712f71a9159502f8b20b52
+    checksum: "{{ taskd_tarball_checksum }}"
+  when: ansible_distribution_major_version|int >= 7
+
+- name: INSTALL | Download taskd-server tarball (Centos <7)
+  get_url:
+    url: "http://{{ taskd_tarball_url }}"
+    dest: "{{ taskd_download_location }}/taskd-latest.tar.gz"
+    checksum: "{{ taskd_tarball_checksum }}"
+  when: ansible_distribution_major_version|int < 7
 
 - name: INSTALL | Create install directory
   file:

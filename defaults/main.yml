@@ -16,6 +16,9 @@ taskd_ubuntu_packages:
   - uuid-dev
   - curl
 
+taskd_tarball_url: taskwarrior.org/download/taskd-latest.tar.gz
+taskd_tarball_checksum: sha1:ded339deeee65277e4712f71a9159502f8b20b52
+
 # Variables for Taskd
 taskd_user: taskd
 taskd_group: taskd
