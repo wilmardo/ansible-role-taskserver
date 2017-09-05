@@ -8,7 +8,7 @@ taskd_yum_packages:
   - libuuid-devel
   - which #workaround until taskd 1.2 then generate script fixed
 
-taskd_ubuntu_packages:
+taskd_apt_packages:
   - cmake
   - make
   - g++
