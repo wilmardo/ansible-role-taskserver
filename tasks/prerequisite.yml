@@ -16,7 +16,7 @@
 - block:
     - set_fact:
         taskd_apt_packages: "{{ taskd_apt_packages }} + [ 'python-urllib3', 'python-openssl', 'python-ndg_httpsclient', 'python-pyasn1' ]"
-      when: (ansible_distribution == 'Debian' and ansible_distribution_version == 7) or (ansible_distribution == 'Ubuntu' and ansible_distribution_version <= 14.04)
+      when: (ansible_distribution == 'Debian' and ansible_distribution_version == "7") or (ansible_distribution == 'Ubuntu' and ansible_distribution_version|int <= 14.04)
 
     - set_fact:
         taskd_apt_packages: "{{ taskd_apt_packages | replace('libgnutls-dev', 'libgnutls28-dev') }}"
