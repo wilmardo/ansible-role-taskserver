@@ -36,22 +36,19 @@
         - ca.cert.pem
         - ca.key.pem
 
-    - name: SETUP | Move generated certs to data location
-      command: "mv {{ taskd_install_location }}/pki/{{ item }} {{ taskd_data_location }}/{{ item }}"
+    - name: SETUP | Copy generated certs to data location
+      copy:
+        src: "{{ taskd_install_location }}/pki/{{ item }}"
+        dest: "{{ taskd_data_location }}/{{ item }}"
+        owner: "{{ taskd_user }}"
+        group: "{{ taskd_group }}"
+        remote_src: yes
       with_items:
         - server.cert.pem
         - server.key.pem
         - server.crl.pem
-      become: yes
-      become_user: "{{ taskd_user }}"
-
-    - name: SETUP | Copy generated ca certs to data location
-      command: "mv {{ taskd_install_location }}/pki/{{ item }} {{ taskd_data_location }}/{{ item }}"
-      with_items:
         - ca.cert.pem
         - ca.key.pem
-      become: yes
-      become_user: "{{ taskd_user }}"
 
   when: taskd_selfsigned == true
 
