@@ -1,9 +1,13 @@
 ---
 - block:
+    - set_fact:
+        sys_packages: "{{ taskd_yum_packages }} + [ 'python-urllib3', 'pyOpenSSL', 'python-ndg_httpsclient', 'python-pyasn1' ]"
+      when: ansible_distribution_major_version|int <7
+
     - name: PREREQUISITE | Install Yum default packages
       yum:
         name: "{{ item }}"
-        state: latest
+        state: present
         update_cache: yes
       with_items: "{{ taskd_yum_packages }}"
 
