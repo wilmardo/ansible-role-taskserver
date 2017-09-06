@@ -25,8 +25,8 @@
 
     - name: add backports repository
       apt_repository:
-      repo: "deb http://ftp.debian.org/debian {{ ansible_distribution_release }}-backports main"
-      state: present
+        repo: "deb http://ftp.debian.org/debian {{ ansible_distribution_release }}-backports main"
+        state: present
       when: ansible_distribution == 'Debian' and ansible_distribution_version|int == 7
 
     - name: PREREQUISITE | Install Apt default packages
