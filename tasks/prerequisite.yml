@@ -16,24 +16,8 @@
 # TODO: Make prettier, load var files?
 - block:
     - set_fact:
-        taskd_apt_packages: "{{ taskd_apt_packages }} + [ 'python-urllib3', 'python-openssl', 'python-ndg-httpsclient', 'python-pyasn1' ]"
-      when: (ansible_distribution == 'Debian' and ansible_distribution_version|int == 7) or (ansible_distribution == 'Ubuntu' and ansible_distribution_version|int <= 14.04)
-
-    - set_fact:
         taskd_apt_packages: "{{ taskd_apt_packages | replace('libgnutls-dev', 'libgnutls28-dev') }}"
       when: ansible_distribution == 'Debian' and ansible_distribution_version|int >= 8
-
-    - name: add backports repository
-      apt_repository:
-        repo: "deb http://ftp.debian.org/debian {{ ansible_distribution_release }}-backports main"
-        state: present
-      when: ansible_distribution == 'Debian' and ansible_distribution_version|int == 7
-
-    - name: add backports repository
-      apt_repository:
-        repo: "deb http://archive.ubuntu.com/ubuntu {{ ansible_distribution_release }}-backports main restricted universe multiverse"
-        state: present
-      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version|int <= 14.04
 
     - name: PREREQUISITE | Install Apt default packages
       apt:

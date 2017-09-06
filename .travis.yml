@@ -25,7 +25,7 @@ before_cache:
 
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get install -y expect-dev nmap
+  - sudo apt-get install -y expect-dev
 
 install:
   - if [ ! "$ANSIBLE_VERSION" ]; then sudo tar xf $HOME/lxc/cache.tar -C / || true; fi
