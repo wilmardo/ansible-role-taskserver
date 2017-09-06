@@ -29,6 +29,12 @@
         state: present
       when: ansible_distribution == 'Debian' and ansible_distribution_version|int == 7
 
+    - name: add backports repository
+      apt_repository:
+        repo: "deb http://archive.ubuntu.com/ubuntu {{ ansible_distribution_release }}-backports main restricted universe multiverse"
+        state: present
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version|int <= 14.04
+
     - name: PREREQUISITE | Install Apt default packages
       apt:
         name: "{{ item }}"
