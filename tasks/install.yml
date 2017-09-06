@@ -17,6 +17,7 @@
     url: "https://{{ taskd_tarball_url }}"
     dest: "{{ taskd_download_location }}/taskd-latest.tar.gz"
     checksum: "{{ taskd_tarball_checksum }}"
+  when: (ansible_distribution == 'Debian' and ansible_distribution_version|int >= 8) or (ansible_distribution == 'Ubuntu' and ansible_distribution_version|int >= 16.04) or (ansible_lsb.major_release|int == 7)
 
 - name: INSTALL | Download taskd-server tarball (No SSL validate due lack of SNI support)
   get_url:
