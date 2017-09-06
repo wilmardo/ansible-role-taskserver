@@ -7,6 +7,9 @@
     mode: 0755
     state: directory
 
+- debug:
+    var: "{{ lookup('env','ENV_VAR') }}"
+
 - name: SETUP | Init datafolder
   command: "taskd init"
   become: yes
