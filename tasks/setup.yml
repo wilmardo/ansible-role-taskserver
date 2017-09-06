@@ -8,7 +8,7 @@
     state: directory
 
 - debug:
-    var: "{{ lookup('env','ENV_VAR') }}"
+    var: "{{ lookup('env','TASKDDATA') }}"
 
 - name: SETUP | Init datafolder
   command: "taskd init"
