@@ -76,10 +76,6 @@
     state: present
     insertafter: eof
 
-- name: INSTALL | Set TASKDDATA for current shell
-  environment:
-    TASKDDATA: "{{ taskd_data_location }}"
-
 - block:
     - name: SETUP | Move systemd script
       template:
