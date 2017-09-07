@@ -68,13 +68,17 @@
     group: "{{ taskd_group }}"
     recurse: yes
 
-- name: INSTALL | Set permanent system variables
+- name: INSTALL | Set permanent TASKDDATA variable
   lineinfile:
     path: "/etc/environment"
     line: "TASKDDATA={{ taskd_data_location }}"
     regexp: "^TASKDDATA="
     state: present
     insertafter: eof
+
+- name: INSTALL | Set TASKDDATA for current shell
+  shell: "export TASKDDATA={{ taskd_data_location }}
+
 
 - block:
     - name: SETUP | Move systemd script
