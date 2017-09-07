@@ -1,4 +1,7 @@
 ---
+environment:
+  TASKDDATA: "{{ taskd_data_location }}"
+
 - fail:
     msg: "taskd_cn undefined, please define in the playbook or host_vars"
   when:  taskd_selfsigned == true and taskd_selfsigned_cn is undefined
