@@ -7,6 +7,9 @@
     mode: 0755
     state: directory
 
+- name: update path
+  shell: source /etc/environment;export PATH
+
 - debug:
     var: "{{ lookup('env','TASKDDATA') }}"
 
