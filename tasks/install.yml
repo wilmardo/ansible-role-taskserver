@@ -71,8 +71,8 @@
 - name: INSTALL | Set permanent system variables
   lineinfile:
     path: "/etc/environment"
-    line: "export TASKDDATA={{ taskd_data_location }}"
-    regexp: "^export TASKDDATA="
+    line: "TASKDDATA={{ taskd_data_location }}"
+    regexp: "^TASKDDATA="
     state: present
     insertafter: eof
 

@@ -11,7 +11,7 @@
   shell: source /etc/environment;export PATH
 
 - debug:
-    var: "{{ lookup('env','TASKDDATA') }}"
+    msg: " TASKDDATA env var: {{ lookup('env','TASKDDATA') }}"
 
 - name: SETUP | Init datafolder
   command: "taskd init"
