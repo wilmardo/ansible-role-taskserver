@@ -77,7 +77,7 @@
     insertafter: eof
 
 - name: INSTALL | Set TASKDDATA for current shell
-  shell: "export TASKDDATA={{ taskd_data_location }}
+  shell: "export TASKDDATA={{ taskd_data_location }}"
 
 
 - block:
