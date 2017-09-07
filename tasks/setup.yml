@@ -9,6 +9,8 @@
 
 - name: SETUP | Init datafolder
   command: "taskd init"
+  environment:
+    TASKDDATA: "{{ taskd_data_location }}"
   become: yes
   become_user: "{{ taskd_user }}"
 
