@@ -1,8 +1,9 @@
 galaxy_info:
   author: wilmardo
-  description: Software dev
+  description: |
+    Role to install the Taskwarrior taskserver taskd
 
-  license: BSD
+  license: BSD-3-Clause-Clear
 
   min_ansible_version: 2.2
 
