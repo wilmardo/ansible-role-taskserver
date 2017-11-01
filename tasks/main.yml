@@ -4,8 +4,11 @@
   when:  taskd_selfsigned == true and taskd_selfsigned_cn is undefined
 
 - include: prerequisite.yml
+
 - include: install.yml
+
 - include: setup.yml
+
 - include: users.yml
   when: taskd_organizations is defined and taskd_users is defined
   tags:

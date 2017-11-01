@@ -1,5 +1,5 @@
 ---
-- name: USERS | Create users and certs folder
+- name: Create users and certs folder
   file:
     path: "{{ taskd_user_cert_location }}"
     owner: "{{ taskd_user }}"
@@ -7,14 +7,14 @@
     mode: 0755
     state: directory
 
-- name: USERS | Create users.conf when nonexisting
+- name: Create users.conf when nonexisting
   file:
     path: "{{ taskd_user_conf_location }}/users.conf"
     owner: "{{ taskd_user }}"
     group: "{{ taskd_group }}"
     state: touch
 
-- name: USERS | Create variable containing users.conf
+- name: Create variable containing users.conf
   command: "cat {{ taskd_user_conf_location }}/users.conf"
   register: taskd_users_conf
 

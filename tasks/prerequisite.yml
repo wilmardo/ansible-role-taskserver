@@ -4,7 +4,7 @@
         taskd_yum_packages: "{{ taskd_yum_packages }} + [ 'python-urllib3', 'pyOpenSSL', 'python-ndg_httpsclient', 'python-pyasn1' ]"
       when: ansible_distribution_major_version|int <7
 
-    - name: PREREQUISITE | Install Yum default packages
+    - name: Install Yum default packages
       yum:
         name: "{{ item }}"
         state: present
@@ -19,7 +19,7 @@
         taskd_apt_packages: "{{ taskd_apt_packages | replace('libgnutls-dev', 'libgnutls28-dev') }}"
       when: ansible_distribution == 'Debian' and ansible_distribution_version|int >= 8
 
-    - name: PREREQUISITE | Install Apt default packages
+    - name: Install Apt default packages
       apt:
         name: "{{ item }}"
         state: latest
