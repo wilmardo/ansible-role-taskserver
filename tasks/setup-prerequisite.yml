@@ -12,7 +12,7 @@
 
 - block:
 
-    - name: Install Nagios prerequisites with yum
+    - name: Install Taskd prerequisites with yum
       yum:
         name: "{{ item }}"
         state: present

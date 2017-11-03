@@ -7,7 +7,16 @@
     mode: 0755
     state: directory
 
-- name: Create config file for taskd (replacement for taskd init)
+- name: SETUP | Init datafolder
+  command: "taskd init"
+  args:
+    creates: "{{ taskd_data_location }}/config"
+  environment:
+    TASKDDATA: "{{ taskd_data_location }}"
+  become: yes
+  become_user: "{{ taskd_user }}"
+
+- name: Create config file for taskd
   template:
     src: taskd_config.jinja2
     dest: "{{ taskd_data_location }}/config"

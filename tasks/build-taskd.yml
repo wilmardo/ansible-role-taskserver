@@ -11,7 +11,7 @@
   get_url:
     url: "{{ taskd_tarball_url }}"
     dest: "{{ taskd_download_location }}/taskd-{{ taskd_version }}.tar.gz"
-  when: taskd_download.changed
+  register: taskd_download
 
 - name: Create install directory
   file:

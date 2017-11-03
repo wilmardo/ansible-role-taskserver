@@ -7,12 +7,19 @@
     mode: 0755
     state: directory
 
+- name: Check for user.conf existence
+  stat:
+    path: "{{ taskd_user_conf_location }}/users.conf"
+  changed_when: false
+  register: taskd_user_conf
+
 - name: Create users.conf when nonexisting
   file:
     path: "{{ taskd_user_conf_location }}/users.conf"
     owner: "{{ taskd_user }}"
     group: "{{ taskd_group }}"
-    state: file
+    state: touch
+  when: taskd_user_conf.stat.exists == false
 
 - name: Create variable containing users.conf
   command: "cat {{ taskd_user_conf_location }}/users.conf"
