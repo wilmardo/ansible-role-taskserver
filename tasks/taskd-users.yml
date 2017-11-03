@@ -12,13 +12,14 @@
     path: "{{ taskd_user_conf_location }}/users.conf"
     owner: "{{ taskd_user }}"
     group: "{{ taskd_group }}"
-    state: touch
+    state: file
 
 - name: Create variable containing users.conf
   command: "cat {{ taskd_user_conf_location }}/users.conf"
   register: taskd_users_conf
+  changed_when: false
 
-- include: add_user.yml
+- include: taskd-useradd.yml
   with_items: "{{ taskd_users }}"
   loop_control:
     loop_var: outer_item

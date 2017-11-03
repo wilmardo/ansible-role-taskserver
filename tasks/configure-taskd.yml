@@ -1,5 +1,5 @@
 ---
-- name: SETUP | Create data folder
+- name: Create data folder
   file:
     path: "{{ taskd_data_location }}"
     owner: "{{ taskd_user }}"
@@ -7,38 +7,31 @@
     mode: 0755
     state: directory
 
-- name: SETUP | Init datafolder
-  command: "taskd init"
-  environment:
-    TASKDDATA: "{{ taskd_data_location }}"
-  become: yes
-  become_user: "{{ taskd_user }}"
+- name: Create config file for taskd (replacement for taskd init)
+  template:
+    src: taskd_config.jinja2
+    dest: "{{ taskd_data_location }}/config"
+    owner: "{{ taskd_user }}"
+    group: "{{ taskd_group }}"
 
 - block:
-    - name: SETUP | Copy selfsigning vars file to location
+    - name: Copy selfsigning vars file to location
       template:
         src: ssl_vars.jinja2
         dest: "{{ taskd_install_location }}/pki/vars"
         owner: "{{ taskd_user }}"
         group: "{{ taskd_group }}"
 
-    - name: SETUP | Run generate cert script
+    - name: Run generate cert script
       shell: ./generate
       args:
+        creates: "{{ taskd_install_location }}/pki/ca.key.pem"
         chdir: "{{ taskd_install_location }}/pki/"
       become: yes
       become_user: "{{ taskd_user }}"
+      register: taskd_server_certs
 
-    - wait_for:
-        path: "{{ taskd_install_location }}/pki/{{ item }}"
-      with_items:
-        - server.cert.pem
-        - server.key.pem
-        - server.crl.pem
-        - ca.cert.pem
-        - ca.key.pem
-
-    - name: SETUP | Copy generated certs to data location
+    - name: Copy generated certs to data location
       copy:
         src: "{{ taskd_install_location }}/pki/{{ item }}"
         dest: "{{ taskd_data_location }}/{{ item }}"
@@ -51,12 +44,6 @@
         - server.crl.pem
         - ca.cert.pem
         - ca.key.pem
+      when: taskd_server_certs.changed
 
   when: taskd_selfsigned == true
-
-- name: SETUP | Create config file for taskd
-  template:
-    src: taskd_config.jinja2
-    dest: "{{ taskd_data_location }}/config"
-    owner: "{{ taskd_user }}"
-    group: "{{ taskd_group }}"

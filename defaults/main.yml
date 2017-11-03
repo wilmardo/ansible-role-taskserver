@@ -1,29 +1,12 @@
 ---
-taskd_yum_packages:
-  - cmake
-  - make
-  - gcc-c++
-  - gnutls-devel
-  - gnutls-utils
-  - libuuid-devel
-  - which #workaround until taskd 1.2 then generate script fixed
-
-taskd_apt_packages:
-  - cmake
-  - make
-  - g++
-  - libgnutls-dev
-  - uuid-dev
-  - curl
-
-taskd_tarball_url: taskwarrior.org/download/taskd-latest.tar.gz
-taskd_tarball_checksum: sha1:ded339deeee65277e4712f71a9159502f8b20b52
+taskd_version: 1.1.0
+taskd_tarball_url: "https://taskwarrior.org/download/taskd-{{ taskd_version }}.tar.gz"
 
 # Variables for Taskd
 taskd_user: taskd
 taskd_group: taskd
 taskd_port: 53589
-taskd_download_location: /root
+taskd_download_location: "{{ ansible_env.HOME }}/nagios"
 taskd_install_location: /opt/taskd
 taskd_data_location: /var/taskd
 taskd_user_conf_location: /var/taskd/users

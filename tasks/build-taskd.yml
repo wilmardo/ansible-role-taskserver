@@ -1,30 +1,17 @@
 ---
-- name: Create taskd group
-  group:
-    name: "{{ taskd_group }}"
-    state: present
-
-- name: Create taskd user
-  user:
-    name: "{{ taskd_user }}"
-    group: "{{ taskd_group }}"
-    state: present
-    createhome: no
-
-#TODO: make more efficient, only download and make when version diffrent?
 - name: Download taskd-server tarball (No SSL validate due lack of SNI support)
   get_url:
-    url: "https://{{ taskd_tarball_url }}"
-    dest: "{{ taskd_download_location }}/taskd-latest.tar.gz"
-    checksum: "{{ taskd_tarball_checksum }}"
+    url: "{{ taskd_tarball_url }}"
+    dest: "{{ taskd_download_location }}/taskd-{{ taskd_version }}.tar.gz"
     validate_certs: no
   when: (ansible_distribution == 'Debian' and ansible_distribution_major_version == '7') or (ansible_distribution == 'Ubuntu' and ansible_distribution_version|int <= 14.04)
+  register: taskd_download
 
 - name: Download taskd-server tarball
   get_url:
-    url: "https://{{ taskd_tarball_url }}"
-    dest: "{{ taskd_download_location }}/taskd-latest.tar.gz"
-    checksum: "{{ taskd_tarball_checksum }}"
+    url: "{{ taskd_tarball_url }}"
+    dest: "{{ taskd_download_location }}/taskd-{{ taskd_version }}.tar.gz"
+  when: taskd_download.changed
 
 - name: Create install directory
   file:
@@ -36,15 +23,11 @@
 
 - name: Untar taskd-server tarball
   unarchive:
-    src: "{{ taskd_download_location }}/taskd-latest.tar.gz"
+    src: "{{ taskd_download_location }}/taskd-{{ taskd_version }}.tar.gz"
     dest: "{{ taskd_install_location }}"
     remote_src: true
     extra_opts: ['--strip-components=1']
-
-- name: Remove packed taskd-server tarball
-  file:
-    path: "{{ taskd_download_location }}/taskd-latest.tar.gz"
-    state: absent
+  when: taskd_download.changed
 
 - name: Cmake taskd-server
   command: cmake -DCMAKE_BUILD_TYPE=release .
@@ -56,7 +39,7 @@
   command: make
   args:
     chdir: "{{ taskd_install_location }}"
-    creates: "{{ taskd_install_location }}/src/taskd"
+    creates: "{{ taskd_install_location }}/src/CMakeFiles/taskd_executable.dir/wcwidth6.cpp.o"
 
 - name: Make install taskd-server
   command: make install
@@ -80,7 +63,7 @@
     insertafter: eof
 
 - block:
-    - name: SETUP | Move systemd script
+    - name: Move systemd script
       template:
         src: taskd.service.jinja2
         dest: /lib/systemd/system/taskd.service
@@ -88,7 +71,7 @@
         group: root
         mode: 0644
 
-    - name: SETUP | Autostart taskd and restart service
+    - name: Autostart taskd and restart service
       systemd:
         name: taskd
         enabled: yes
