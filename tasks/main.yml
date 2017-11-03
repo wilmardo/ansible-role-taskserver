@@ -1,8 +1,4 @@
 ---
-- fail:
-    msg: "taskd_cn undefined, please define in the playbook or host_vars"
-  when:  taskd_selfsigned == true and taskd_selfsigned_cn is undefined
-
 - name: Ensure download directory is present
   file:
     path: "{{ taskd_download_location }}"

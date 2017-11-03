@@ -7,7 +7,7 @@
     mode: 0755
     state: directory
 
-- name: SETUP | Init datafolder
+- name: Init datafolder
   command: "taskd init"
   args:
     creates: "{{ taskd_data_location }}/config"

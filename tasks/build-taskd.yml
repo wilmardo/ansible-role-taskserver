@@ -56,7 +56,7 @@
 
 - name: Set permanent TASKDDATA variable
   lineinfile:
-    path: "/etc/environment"
+    dest: "/etc/environment"
     line: "TASKDDATA={{ taskd_data_location }}"
     regexp: "^TASKDDATA="
     state: present
