@@ -8,6 +8,12 @@
         update_cache: yes
       with_items: "{{ taskd_prerequisites }}"
 
+    - name: Install certtool with apt
+      yum:
+        name: gnutls-bin
+        state: present
+      when: taskd_selfsigned == true
+
   when: ansible_os_family == "Debian"
 
 - block:
@@ -18,6 +24,12 @@
         state: present
         update_cache: yes
       with_items: "{{ taskd_prerequisites }}"
+
+    - name: Install certtool with yum
+      yum:
+        name: gnutls-utils
+        state: present
+      when: taskd_selfsigned == true
 
   when: ansible_os_family == "RedHat"
 
