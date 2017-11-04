@@ -9,7 +9,7 @@
       with_items: "{{ taskd_prerequisites }}"
 
     - name: Install certtool with apt
-      yum:
+      apt:
         name: gnutls-bin
         state: present
       when: taskd_selfsigned == true
