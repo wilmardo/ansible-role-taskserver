@@ -25,7 +25,7 @@
 
     - name: Append created user to users.conf
       blockinfile:
-        path: "{{ taskd_user_conf_location }}/users.conf"
+        dest: "{{ taskd_user_conf_location }}/users.conf"
         state: present
         insertafter: BOF
         block: |
