@@ -2,30 +2,26 @@
 - block:
     - name: Add organizations
       command: "taskd add org '{{ outer_item.organization }}'"
-      become: yes
-      become_user: "{{ taskd_user }}"
+      environment:
+        TASKDDATA: "{{ taskd_data_location }}"
       when: taskd_users_conf.stdout.find(outer_item.organization) == -1 # When organization not yet found in users.conf
 
     - name: Add users
       command: "taskd add user '{{ outer_item.organization }}' '{{ outer_item.name }}'"
-      become: yes
-      become_user: "{{ taskd_user }}"
+      environment:
+        TASKDDATA: "{{ taskd_data_location }}"
       register: taskd_user_key
 
     - name: Run generate client cert script
       shell: "./generate.client {{ outer_item.name|replace(' ', '_') }}"
       args:
         chdir: "{{ taskd_install_location }}/pki/"
-      become: yes
-      become_user: "{{ taskd_user }}"
 
     - name: Move generated user certs
       command: "mv {{ taskd_install_location }}/pki/{{ outer_item.name|replace(' ', '_') }}.{{ item }} {{ taskd_user_cert_location }}/{{ outer_item.name|replace(' ', '_') }}.{{ item }}"
       with_items:
         - 'cert.pem'
         - 'key.pem'
-      become: yes
-      become_user: "{{ taskd_user }}"
 
     - name: Append created user to users.conf
       blockinfile:

@@ -1,4 +1,5 @@
 ---
+
 - name: Create data folder
   file:
     path: "{{ taskd_data_location }}"
@@ -7,14 +8,20 @@
     mode: 0755
     state: directory
 
+- name: Set permanent TASKDDATA variable
+  lineinfile:
+    dest: "/etc/profile"
+    line: "export TASKDDATA={{ taskd_data_location }}"
+    regexp: "^export TASKDDATA="
+    state: present
+    insertafter: eof
+
 - name: Init datafolder
   command: "taskd init"
   args:
     creates: "{{ taskd_data_location }}/config"
   environment:
     TASKDDATA: "{{ taskd_data_location }}"
-  become: yes
-  become_user: "{{ taskd_user }}"
 
 - name: Create config file for taskd
   template:
@@ -36,8 +43,6 @@
       args:
         creates: "{{ taskd_install_location }}/pki/ca.key.pem"
         chdir: "{{ taskd_install_location }}/pki/"
-      become: yes
-      become_user: "{{ taskd_user }}"
       register: taskd_server_certs
 
     - name: Copy generated certs to data location
