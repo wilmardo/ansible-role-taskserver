@@ -1,7 +1,7 @@
 galaxy_info:
   author: wilmardo
   description: |
-    Role to install the Taskwarrior taskserver taskd
+    Role to install the Taskwarrior taskserver (taskd).
 
   license: BSD-3-Clause-Clear
 
@@ -15,11 +15,14 @@ galaxy_info:
   - name: Ubuntu
     versions:
     - xenial
+    - trusty
+    - precise
 
   - name: Debian
     versions:
     - stretch
     - jessie
+    - wheezy
 
   galaxy_tags:
     - taskwarrior

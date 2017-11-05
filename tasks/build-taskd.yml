@@ -1,0 +1,110 @@
+---
+- name: Download taskd-server tarball (No SSL validate due lack of SNI support)
+  get_url:
+    url: "{{ taskd_tarball_url }}"
+    dest: "{{ taskd_download_location }}/taskd-{{ taskd_version }}.tar.gz"
+    validate_certs: no
+  when: (ansible_distribution == 'Debian' and ansible_distribution_major_version == '7') or (ansible_distribution == 'Ubuntu' and ansible_distribution_version|int <= 14.04)
+  register: taskd_download_no_ssl
+
+- name: Download taskd-server tarball
+  get_url:
+    url: "{{ taskd_tarball_url }}"
+    dest: "{{ taskd_download_location }}/taskd-{{ taskd_version }}.tar.gz"
+  register: taskd_download
+
+- block:
+    - name: Create install directory
+      file:
+        path: "{{ taskd_install_location }}"
+        owner: "{{ taskd_user }}"
+        group: "{{ taskd_group }}"
+        mode: 0755
+        state: directory
+
+    - name: Untar taskd-server tarball
+      unarchive:
+        src: "{{ taskd_download_location }}/taskd-{{ taskd_version }}.tar.gz"
+        dest: "{{ taskd_install_location }}"
+        remote_src: true
+        extra_opts: ['--strip-components=1']
+
+    - name: Cmake taskd-server
+      shell: cmake -DCMAKE_BUILD_TYPE=release .
+      args:
+        chdir: "{{ taskd_install_location }}"
+        creates: "{{ taskd_install_location }}/Makefile"
+
+    - name: Make taskd-server
+      command: make
+      args:
+        chdir: "{{ taskd_install_location }}"
+        creates: "{{ taskd_install_location }}/src/CMakeFiles/taskd_executable.dir/wcwidth6.cpp.o"
+
+    - name: Make install taskd-server
+      command: make install
+      args:
+        chdir: "{{ taskd_install_location }}"
+        creates: /usr/local/bin/taskd
+
+    - name: Set file permissions in the install folder
+      file:
+        dest: "{{ taskd_install_location }}"
+        owner: "{{ taskd_user }}"
+        group: "{{ taskd_group }}"
+        recurse: yes
+
+    - block:
+        - name: Move systemd script
+          template:
+            src: taskd.service.jinja2
+            dest: /lib/systemd/system/taskd.service
+            owner: root
+            group: root
+            mode: 0644
+
+        - name: Autostart taskd and restart service
+          systemd:
+            name: taskd
+            enabled: yes
+            daemon_reload: yes
+          notify: restart taskd
+
+      when: (ansible_distribution == 'Ubuntu' and ansible_distribution_version >= '16.04') or (ansible_distribution == 'CentOS' and ansible_distribution_major_version == '7')
+
+    #TODO: Make init-script
+    - block:
+        - name: Move init script for CentOS 6
+          file:
+            src: taskd/taskd-init.jinja2"
+            dest: /etc/init.d/taskd
+            owner: root
+            group: root
+            mode: 0744
+            state: link
+
+        - name: Autostart taskd and restart service
+          service:
+            name: taskd
+            enabled: yes
+          notify: restart taskd
+
+      when: ansible_distribution == 'CentOS' and ansible_distribution_major_version == '6'
+
+    #TODO: PR this to taskwarrior
+    - block:
+        - name: Create symlink for taskdctl to standard CentOS $PATH dir
+          file:
+            src: /usr/local/bin/taskd
+            path: /usr/bin/taskd
+            state: link
+
+        - name: Create symlink for taskd to standard CentOS $PATH dir
+          file:
+            src: /usr/local/bin/taskdctl
+            path: /usr/bin/taskdctl
+            state: link
+
+      when: ansible_distribution == 'CentOS'
+
+  when: taskd_download.changed or taskd_download_no_ssl.changed

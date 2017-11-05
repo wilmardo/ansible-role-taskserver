@@ -1,14 +1,22 @@
 ---
-- fail:
-    msg: "taskd_cn undefined, please define in the playbook or host_vars"
-  when:  taskd_selfsigned == true and taskd_selfsigned_cn is undefined
+- name: Ensure download directory is present
+  file:
+    path: "{{ taskd_download_location }}"
+    state: directory
 
-- include: prerequisite.yml
-- include: install.yml
-- include: setup.yml
-- include: users.yml
+- include: load-variables.yml
+
+- include: setup-prerequisite.yml
+
+- include: setup-users.yml
+
+- include: build-taskd.yml
+
+- include: configure-taskd.yml
+
+- include: taskd-users.yml
   when: taskd_organizations is defined and taskd_users is defined
   tags:
-  - users
+    - users
 
 #TODO: Posibillity to regenerate (user) certs
