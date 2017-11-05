@@ -1,7 +1,7 @@
 galaxy_info:
   author: wilmardo
   description: |
-    Role to install the Taskwarrior taskserver taskd
+    Role to install the Taskwarrior taskserver (taskd).
 
   license: BSD-3-Clause-Clear
 
