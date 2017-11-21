@@ -19,6 +19,9 @@ env:
     - ANSIBLE_VERSION='ansible>=2.2.0,<2.3.0' #EOL 2017-05-09
     - ANSIBLE_VERSION='ansible>=2.3.0,<2.4.0' #EOL 2017-06-01
     - ANSIBLE_VERSION='git+https://github.com/ansible/ansible.git@devel' #DEVEL
+matrix:
+  allow_failures:
+    - env: LXC_DISTRO=ubuntu LXC_RELEASE=xenial ANSIBLE_VERSION='git+https://github.com/ansible/ansible.git@devel' #2.5 DEVEL
 
 before_cache:
   - sudo mkdir $HOME/lxc && sudo tar cf $HOME/lxc/cache.tar /var/cache/lxc/ && sudo chown $USER. $HOME/lxc/cache.tar
