@@ -8,7 +8,7 @@ taskd_users:
     organization: Public
 
 # Taskd version to install
-taskd_version: 1.1.0
+taskd_version: 1.1.1
 
 # Download url for taskd
 taskd_tarball_url: "https://taskwarrior.org/download/taskd-{{ taskd_version }}.tar.gz"
