@@ -1,0 +1,4 @@
+# rulesdir:
+#    - ./molecule/default/rules/
+skip_list:
+  - ANSIBLE0013

@@ -1,0 +1,9 @@
+---
+taskserver:
+  image: centos:7
+  ports:
+    - "{{ taskd_port }}"
+  entrypoint: ["/usr/bin/dumb-init", "--"]
+  command: ["/usr/local/bin/taskd server", "--data {{ taskd_data_location }}"]
+  environment:
+    - "TASKDDATA={{ taskd_data_location }}"

@@ -1,4 +1,6 @@
 .vagrant/
+.molecule/
 .idea/
 *.retry
 *.log
+*.pyc

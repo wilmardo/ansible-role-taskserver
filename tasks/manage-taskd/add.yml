@@ -1,0 +1,56 @@
+---
+- block:
+    - name: Add organization
+      command: "/usr/local/bin/taskd add org '{{ outer_item.organization }}'"
+      environment:
+        TASKDDATA: "{{ taskd_data_location }}"
+
+    - name: Append created organization to organization.conf
+      blockinfile:
+        dest: "{{ taskd_user_conf_location }}/organizations.conf"
+        state: present
+        insertafter: BOF
+        block: |
+          Organization: {{ outer_item.organization }}
+        marker: "# {mark} {{ outer_item.name }}"
+        create: yes
+
+  when: taskd_conf.results.0.stdout.find(outer_item.organization) == -1 # When organization not found in organizations.conf
+
+- block:
+    - name: Add user
+      command: "/usr/local/bin/taskd add user '{{ outer_item.organization }}' '{{ outer_item.name }}'"
+      environment:
+        TASKDDATA: "{{ taskd_data_location }}"
+      register: taskd_user_key
+
+    - name: Run generate client cert script
+      shell: "./generate.client {{ outer_item.name|replace(' ', '_') }}"
+      args:
+        chdir: "{{ taskd_install_location }}/pki/"
+        creates: "{{ taskd_install_location }}/pki/{{ outer_item.name|replace(' ', '_') }}.cert.pem"
+      environment:
+        TASKDDATA: "{{ taskd_data_location}}"
+
+    - name: Move generated user certs
+      command: "mv {{ taskd_install_location }}/pki/{{ outer_item.name|replace(' ', '_') }}.{{ item }} {{ taskd_user_cert_location }}/{{ outer_item.name|replace(' ', '_') }}.{{ item }}"
+      with_items:
+        - 'cert.pem'
+        - 'key.pem'
+
+    - name: Append created user to users.conf
+      blockinfile:
+        dest: "{{ taskd_user_conf_location }}/users.conf"
+        state: present
+        insertafter: BOF
+        block: |
+          Name: {{ outer_item.name }}
+          Organization: {{ outer_item.organization }}
+          User key: {{ taskd_user_key.stdout[14:] }}
+          Server ca.cert.pem location: {{ taskd_ca_cert }}
+          User cert.pem location: {{ taskd_user_cert_location }}/{{ outer_item.name|replace(' ', '_') }}.cert.pem
+          User key.pem location: {{ taskd_user_cert_location }}/{{ outer_item.name|replace(' ', '_') }}.key.pem
+        marker: "# {mark} {{ outer_item.name }}"
+        create: yes
+
+  when: taskd_conf.results.1.stdout.find(outer_item.name) == -1 # When user not found in users.conf

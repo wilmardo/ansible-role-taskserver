@@ -1,22 +1,29 @@
 ---
-- name: Ensure download directory is present
-  file:
-    path: "{{ taskd_download_location }}"
-    state: directory
-
 - include: load-variables.yml
 
-- include: setup-prerequisite.yml
+- name: Check if taskd is installed
+  stat:
+    path: /usr/local/bin/taskd
+  register: taskd_installed
 
-- include: setup-users.yml
+- name: Register installed taskd version
+  command: /usr/local/bin/taskd --version
+  register: taskd_installed_version
+  changed_when: false
+  when: taskd_installed.stat.exists
 
-- include: build-taskd.yml
+- block:
+    - include: prerequisite.yml
+      vars:
+        state: present
 
-- include: configure-taskd.yml
+    - include: install-taskd/main.yml
 
-- include: taskd-users.yml
-  when: taskd_organizations is defined and taskd_users is defined
-  tags:
-    - users
+    - include: prerequisite.yml
+      vars:
+        state: absent
 
-#TODO: Posibillity to regenerate (user) certs
+  when: (not taskd_installed.stat.exists) or
+        (taskd_version not in taskd_installed_version.stdout)
+
+- include: manage-taskd/main.yml

@@ -3,3 +3,4 @@
   service:
     name: taskd
     state: restarted
+  when: ansible_connection != 'docker'

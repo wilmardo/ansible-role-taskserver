@@ -1,0 +1,59 @@
+---
+- block:
+    - name: "Taskd prerequisites with apt, state: {{ state }}"
+      apt:
+        name: "{{ taskd_prerequisites }}"
+        state: "{{ state }}"
+        update_cache: true
+
+    - name: Install certtool with apt
+      apt:
+        name: gnutls-bin
+        state: present
+      when: taskd_selfsigned
+
+  when: ansible_os_family == 'Debian'
+
+- block:
+    - name: "Taskd prerequisites with yum, state: {{ state }}"
+      yum:
+        name: "{{ taskd_prerequisites }}"
+        state: "{{ state }}"
+        update_cache: true
+
+    #FIXME: Remove which install when 1.2 is released
+    - name: Install certtool with yum
+      yum:
+        name:
+          - gnutls-utils
+          - which
+        state: present
+      when: taskd_selfsigned
+
+  when: ansible_distribution == 'CentOS'
+
+- block:
+    - name: "Taskd prerequisites with dnf, state: {{ state }}"
+      dnf:
+        name: "{{ taskd_prerequisites }}"
+        state: "{{ state }}"
+        update_cache: true
+
+    - name: Install certtool with dnf
+      dnf:
+        name: gnutls-utils
+        state: present
+      when: taskd_selfsigned
+
+  when: ansible_os_family == 'Fedora'
+
+- name: "Packages for Centos 6 to be able to validate SNI, state: {{ state }}"
+  yum:
+    name: "{{ item }}"
+    state: "{{ state }}"
+  with_items:
+    - python-urllib3
+    - pyOpenSSL
+    - python-ndg_httpsclient
+    - python-pyasn1
+  when: ansible_distribution == 'CentOS' and ansible_distribution_major_version == '6'

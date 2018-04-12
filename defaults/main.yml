@@ -6,6 +6,8 @@ taskd_organizations:
 taskd_users:
   - name: First Last
     organization: Public
+  - name: jkj Last
+    organization: Public
 
 # Taskd version to install
 taskd_version: 1.1.0
@@ -17,6 +19,8 @@ taskd_tarball_url: "https://taskwarrior.org/download/taskd-{{ taskd_version }}.t
 taskd_user: taskd
 # Group taskd daemon runs as
 taskd_group: taskd
+# The ip address for the taskserver, defaults to ansible default
+taskd_ip_address: "{{ ansible_default_ipv4['address'] }}"
 # The port to use for the taskserver (for any port under 1024 the taskserver needs to be run as root, NOT recommended)
 taskd_port: 53589
 # Download location for taskd tarball
@@ -26,9 +30,9 @@ taskd_install_location: /opt/taskd
 # Location for taskd data, sets the $TASKDDATA variable (recommended is to NOT put it in your Taskd exec dir)
 taskd_data_location: /var/taskd
 # Location to safe user.conf file to
-taskd_user_conf_location: /var/taskd/users
+taskd_user_conf_location: "{{ taskd_data_location }}/users"
 # Location to safe user certificates to
-taskd_user_cert_location: /var/taskd/users/certs
+taskd_user_cert_location: "{{ taskd_data_location }}/users/certs"
 
 # Variables for ssl certs (defaults for selfsigned). Can be used to use signed certificates already stored on the server
 taskd_client_cert: "{{ taskd_data_location }}/client.cert.pem"

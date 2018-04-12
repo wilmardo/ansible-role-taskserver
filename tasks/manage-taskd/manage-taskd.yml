@@ -1,0 +1,32 @@
+---
+- name: Create users and certs folder
+  file:
+    path: "{{ taskd_user_cert_location }}"
+    owner: "{{ taskd_user }}"
+    group: "{{ taskd_group }}"
+    mode: 0755
+    state: directory
+
+- name: Create confs when non existing
+  template:
+    src: empty.j2
+    dest: "{{ taskd_user_conf_location }}/{{ item }}"
+    force: no
+  with_items:
+    - organizations.conf
+    - users.conf
+
+#FIXME: Better approach would be to create a yaml/json and "{{ lookup('file', users.conf) }}"
+- name: Create variable containing confs
+  command: "cat {{ taskd_user_conf_location }}/{{ item }}"
+  with_items:
+    - organizations.conf
+    - users.conf
+  changed_when: false
+  register: taskd_conf
+
+#TODO: Posibillity to regenerate (user) certs
+- include: add.yml
+  with_items: "{{ taskd_users }}"
+  loop_control:
+    loop_var: outer_item

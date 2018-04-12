@@ -1,3 +1,4 @@
+---
 galaxy_info:
   author: wilmardo
   description: |
@@ -8,21 +9,24 @@ galaxy_info:
   min_ansible_version: 2.2
 
   platforms:
-  - name: EL
-    versions:
-      - 7
+    - name: EL
+      versions:
+        - 7
 
-  - name: Ubuntu
-    versions:
-    - xenial
-    - trusty
-    - precise
+    - name: Fedora
+      versions:
+        - 26
+        - 27
 
-  - name: Debian
-    versions:
-    - stretch
-    - jessie
-    - wheezy
+    - name: Ubuntu
+      versions:
+        - trusty
+        - xenial
+
+    - name: Debian
+      versions:
+        - jessie
+        - stretch
 
   galaxy_tags:
     - taskwarrior

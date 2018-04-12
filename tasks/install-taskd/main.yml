@@ -1,0 +1,6 @@
+---
+- include: setup-users.yml
+
+- include: build-taskd.yml
+
+- include: configure-taskd.yml
