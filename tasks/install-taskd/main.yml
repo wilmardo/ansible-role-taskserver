@@ -3,11 +3,11 @@
   vars:
     state: present
 
-- include: setup-users.yml
+- include: setup-os-users.yml
 
-- include: build-taskd.yml
+- include: build.yml
 
-- include: configure-taskd.yml
+- include: configure.yml
 
 - include: prerequisite.yml
   vars:

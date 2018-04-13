@@ -11,7 +11,7 @@
   template:
     src: empty.j2
     dest: "{{ taskd_user_conf_location }}/{{ item }}"
-    force: no
+    force: false
   with_items:
     - organizations.conf
     - users.conf

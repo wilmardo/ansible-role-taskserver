@@ -13,7 +13,7 @@
         block: |
           Organization: {{ outer_item.organization }}
         marker: "# {mark} {{ outer_item.name }}"
-        create: yes
+        create: true
 
   when: taskd_conf.results.0.stdout.find(outer_item.organization) == -1 # When organization not found in organizations.conf
 
@@ -51,6 +51,6 @@
           User cert.pem location: {{ taskd_user_cert_location }}/{{ outer_item.name|replace(' ', '_') }}.cert.pem
           User key.pem location: {{ taskd_user_cert_location }}/{{ outer_item.name|replace(' ', '_') }}.key.pem
         marker: "# {mark} {{ outer_item.name }}"
-        create: yes
+        create: true
 
   when: taskd_conf.results.1.stdout.find(outer_item.name) == -1 # When user not found in users.conf

@@ -16,4 +16,5 @@
   when: (not taskd_installed.stat.exists) or
         (taskd_version not in taskd_installed_version.stdout)
 
-- include: manage-taskd/main.yml
+- include: manage-taskd/manage.yml
+  when: taskd_organizations is defined and taskd_users is defined

@@ -1,14 +1,4 @@
 ---
-# Organizations to be created
-taskd_organizations:
-  - Public
-# The users to be created, organization must be in the taskd_organizations variable!
-taskd_users:
-  - name: First Last
-    organization: Public
-  - name: jkj Last
-    organization: Public
-
 # Taskd version to install
 taskd_version: 1.1.0
 
