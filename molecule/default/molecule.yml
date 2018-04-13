@@ -18,11 +18,6 @@ platforms:
     tmpfs:
       - /run
 
-  - name: Centos6
-    image: centos:6
-    ulimits:
-      - memlock:60397977:60397977
-
   - name: Debian9
     image: wilmardo/docker-debian-ansible:9
     capabilities:
@@ -42,26 +37,6 @@ platforms:
     tmpfs:
       - /run
       - /run/lock
-
-  - name: Fedora27
-    image: wilmardo/docker-fedora-ansible:27
-    capabilities:
-      - SYS_ADMIN
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-    tmpfs:
-      - /run
-      - /tmp
-
-  - name: Fedora26
-    image: wilmardo/docker-fedora-ansible:26
-    capabilities:
-      - SYS_ADMIN
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-    tmpfs:
-      - /run
-      - /tmp
 
   - name: Ubuntu1604
     image: wilmardo/docker-ubuntu-ansible:16.04
