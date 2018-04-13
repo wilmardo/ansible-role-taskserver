@@ -1,5 +1,3 @@
 ---
 - include: manage-taskd.yml
   when: taskd_organizations is defined and taskd_users is defined
-  tags:
-    - users

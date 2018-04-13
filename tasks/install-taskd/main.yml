@@ -1,6 +1,14 @@
 ---
+- include: prerequisite.yml
+  vars:
+    state: present
+
 - include: setup-users.yml
 
 - include: build-taskd.yml
 
 - include: configure-taskd.yml
+
+- include: prerequisite.yml
+  vars:
+    state: absent

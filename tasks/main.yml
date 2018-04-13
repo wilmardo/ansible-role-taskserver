@@ -12,17 +12,7 @@
   changed_when: false
   when: taskd_installed.stat.exists
 
-- block:
-    - include: prerequisite.yml
-      vars:
-        state: present
-
-    - include: install-taskd/main.yml
-
-    - include: prerequisite.yml
-      vars:
-        state: absent
-
+- include: install-taskd/main.yml
   when: (not taskd_installed.stat.exists) or
         (taskd_version not in taskd_installed_version.stdout)
 
