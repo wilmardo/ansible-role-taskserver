@@ -55,6 +55,9 @@ provisioner:
   name: ansible
   options:
     vv: true
+  config_options:
+    defaults:
+      callback_whitelist: profile_tasks
   lint:
     name: ansible-lint
 
