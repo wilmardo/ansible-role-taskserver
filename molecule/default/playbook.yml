@@ -17,10 +17,3 @@
     - name: Test taskd version
       shell: "taskd --version | grep -q '{{ taskd_version }}' && (echo 'Taskserver v{{ taskd_version }} installed'; exit 0) || (echo 'Taskserver not correct installed'; exit 1)"
       changed_when: false
-
-    - name: Grab system Logs
-      shell: "journalctl -xn || cat /var/log/messages || cat /var/log/syslog"
-      environment:
-        - PAGER: cat
-      changed_when: false
-      ignore_errors: true
