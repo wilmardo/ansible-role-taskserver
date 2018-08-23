@@ -1,14 +1,14 @@
 ---
-- include: prerequisite.yml
+- include_tasks: prerequisite.yml
   vars:
     state: present
 
-- include: setup-os-users.yml
+- include_tasks: setup-os-users.yml
 
-- include: build.yml
+- include_tasks: build.yml
 
-- include: configure.yml
+- include_tasks: configure.yml
 
-- include: prerequisite.yml
+- include_tasks: prerequisite.yml
   vars:
     state: absent

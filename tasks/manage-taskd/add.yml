@@ -15,7 +15,7 @@
         marker: "# {mark} {{ outer_item.name }}"
         create: true
 
-  when: taskd_conf.results.0.stdout.find(outer_item.organization) == -1 # When organization not found in organizations.conf
+  when: taskd_conf.results.0.stdout.find(outer_item.organization) == -1 # organization not found in organizations.conf
 
 - block:
     - name: Add user
@@ -33,7 +33,10 @@
         TASKDDATA: "{{ taskd_data_location}}"
 
     - name: Move generated user certs
-      command: "mv {{ taskd_install_location }}/pki/{{ outer_item.name|replace(' ', '_') }}.{{ item }} {{ taskd_user_cert_location }}/{{ outer_item.name|replace(' ', '_') }}.{{ item }}"
+      copy:
+        src: "{{ taskd_install_location }}/pki/{{ outer_item.name|replace(' ', '_') }}.{{ item }}"
+        dest: "{{ taskd_user_cert_location }}/{{ outer_item.name|replace(' ', '_') }}.{{ item }}"
+        remote_src: true
       with_items:
         - 'cert.pem'
         - 'key.pem'

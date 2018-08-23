@@ -16,7 +16,7 @@
     - organizations.conf
     - users.conf
 
-#FIXME: Better approach would be to create a yaml/json and "{{ lookup('file', users.conf) }}"
+# FIXME: Better approach would be to create a yaml/json and "{{ lookup('file', users.conf) }}"
 - name: Create variable containing confs
   command: "cat {{ taskd_user_conf_location }}/{{ item }}"
   with_items:
@@ -25,7 +25,7 @@
   changed_when: false
   register: taskd_conf
 
-#TODO: Posibillity to regenerate (user) certs
+# TODO: Posibillity to regenerate (user) certs
 - include: add.yml
   with_items: "{{ taskd_users }}"
   loop_control:

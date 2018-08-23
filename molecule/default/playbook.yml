@@ -12,8 +12,3 @@
   roles:
     - role: ansible-role-taskserver
       taskd_ip_address: 127.0.0.1
-
-  post_tasks:
-    - name: Test taskd version
-      shell: "taskd --version | grep -q '{{ taskd_version }}' && (echo 'Taskserver v{{ taskd_version }} installed'; exit 0) || (echo 'Taskserver not correct installed'; exit 1)"
-      changed_when: false

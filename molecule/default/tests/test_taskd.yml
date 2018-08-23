@@ -1,0 +1,17 @@
+---
+user:
+  taskd:
+    exists: true
+
+group:
+  taskd:
+    exists: true
+
+port:
+    tcp:53589:
+      listening: true
+
+service:
+  taskd:
+    enabled: true
+    running: true

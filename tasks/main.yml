@@ -1,5 +1,5 @@
 ---
-- include: load-variables.yml
+- include_tasks: load-variables.yml
 
 - name: Check if taskd is installed
   stat:
@@ -12,9 +12,9 @@
   changed_when: false
   when: taskd_installed.stat.exists
 
-- include: install-taskd/main.yml
+- include_tasks: install-taskd/main.yml
   when: (not taskd_installed.stat.exists) or
         (taskd_version not in taskd_installed_version.stdout)
 
-- include: manage-taskd/manage.yml
+- include_tasks: manage-taskd/manage.yml
   when: taskd_organizations is defined and taskd_users is defined

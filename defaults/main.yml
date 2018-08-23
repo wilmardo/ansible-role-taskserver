@@ -1,9 +1,6 @@
 ---
-# Taskd version to install
-taskd_version: 1.1.0
-
-# Download url for taskd
-taskd_tarball_url: "https://taskwarrior.org/download/taskd-{{ taskd_version }}.tar.gz"
+# Taskd version to install, gets passed to git module
+taskd_version: v1.1.0
 
 # User taskd daemon runs as
 taskd_user: taskd

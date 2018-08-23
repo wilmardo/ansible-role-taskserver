@@ -21,7 +21,7 @@
         state: "{{ state }}"
         update_cache: true
 
-    #FIXME: Remove which install when 1.2 is released
+    # FIXME: Remove which install when 1.2 is released
     - name: Install certtool with yum
       yum:
         name:

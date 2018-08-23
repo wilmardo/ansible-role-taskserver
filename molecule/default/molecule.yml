@@ -5,7 +5,7 @@ dependency:
     role-file: requirements.yml
 
 driver:
-  name: docker
+  name: lxd
 
 lint:
   name: yamllint
@@ -13,17 +13,23 @@ lint:
     config-file: ${DEV_MOLECULE_RULES}/yaml-lint.yml
 
 platforms:
-  - name: Centos7
-    image: lansible/centos:7
+  - name: Taskserver-CentOS7
+    alias: centos/7/amd64
 
-  - name: Debian9
-    image: lansible/debian:9
+  - name: Taskserver-CentOS6
+    alias: centos/6/amd64
 
-  - name: Debian8
-    image: lansible/debian:8
+  - name: Taskserver-Debian9
+    alias: debian/stretch/amd64
 
-  - name: Ubuntu1604
-    image: lansible/ubuntu:16.04
+  - name: Taskserver-Debian8
+    alias: debian/jessie/amd64
+
+  - name: Taskserver-Ubuntu1804
+    alias: ubuntu/bionic/amd64
+
+  - name: Taskserver-Ubuntu1604
+    alias: ubuntu/xenial/amd64
 
 provisioner:
   name: ansible
@@ -34,6 +40,13 @@ provisioner:
     name: ansible-lint
     options:
       c: ${DEV_MOLECULE_RULES}/ansible-lint.yml
+
+verifier:
+  name: goss
+  lint:
+    name: yamllint
+    options:
+      config-file: ${DEV_MOLECULE_RULES}/yaml-lint.yml
 
 scenario:
   name: default

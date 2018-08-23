@@ -1,7 +1,8 @@
 # wilmardo.taskserver
 
-[![Build Status](https://travis-ci.org/wilmardo/ansible-role-taskserver.svg?branch=master)](https://travis-ci.org/wilmardo/ansible-role-taskserver)
-[![Galaxy](http://img.shields.io/badge/galaxy-wilmardo.taskserver-blue.svg)](https://galaxy.ansible.com/wilmardo/taskserver/)
+[![Ansible Role](https://img.shields.io/ansible/role/21350.svg?style=flat-square)](https://galaxy.ansible.com/wilmardo/taskserver)
+[![Travis (.org)](https://img.shields.io/travis/wilmardo/ansible-role-taskserver.svg?style=flat-square)](https://travis-ci.org/wilmardo/ansible-role-taskserver)
+[![Ansible Role](https://img.shields.io/ansible/role/d/21350.svg?style=flat-square)](https://galaxy.ansible.com/wilmardo/taskserver)
 
 Ansible role to setup a Taskserver(taskd) for Taskwarrior
 
@@ -28,16 +29,15 @@ taskd_users:
 
 For more advanced usage the following variables are available:
 ```yaml
-# Taskd version to install
-taskd_version: 1.1.0
-
-# Download url for taskd
-taskd_tarball_url: "https://taskwarrior.org/download/taskd-{{ taskd_version }}.tar.gz"
+# Taskd version to install, gets passed to git module
+taskd_version: v1.1.0
 
 # User taskd daemon runs as
 taskd_user: taskd
 # Group taskd daemon runs as
 taskd_group: taskd
+# The ip address for the taskserver, defaults to ansible default
+taskd_ip_address: "{{ ansible_default_ipv4['address'] }}"
 # The port to use for the taskserver (for any port under 1024 the taskserver needs to be run as root, NOT recommended)
 taskd_port: 53589
 # Download location for taskd tarball
@@ -47,14 +47,18 @@ taskd_install_location: /opt/taskd
 # Location for taskd data, sets the $TASKDDATA variable (recommended is to NOT put it in your Taskd exec dir)
 taskd_data_location: /var/taskd
 # Location to safe user.conf file to
-taskd_user_conf_location: /var/taskd/users
+taskd_user_conf_location: "{{ taskd_data_location }}/users"
 # Location to safe user certificates to
-taskd_user_cert_location: /var/taskd/users/certs
-```
-#### SSL Setup
-For the SSL setup the following variables are available, the role defaults to selfsigned certificates.
-Selfsigned certificates are not recommended for production use but might be acceptable for personal use.
-```yaml
+taskd_user_cert_location: "{{ taskd_data_location }}/users/certs"
+
+# Variables for ssl certs (defaults for selfsigned). Can be used to use signed certificates already stored on the server
+taskd_client_cert: "{{ taskd_data_location }}/client.cert.pem"
+taskd_client_key: "{{ taskd_data_location }}/client.key.pem"
+taskd_server_cert: "{{ taskd_data_location }}/server.cert.pem"
+taskd_server_key: "{{ taskd_data_location }}/server.key.pem"
+taskd_server_crl: "{{ taskd_data_location }}/server.crl.pem"
+taskd_ca_cert: "{{ taskd_data_location }}/ca.cert.pem"
+
 # Set to false to disable the generation of selfsigned certificates
 taskd_selfsigned: true
 
@@ -72,18 +76,6 @@ taskd_selfsigned_country: SE
 taskd_selfsigned_state: Västra Götaland
 # Certificate locality
 taskd_selfsigned_locality: Göteborg
-```
-
-If you want to use authorized certificates you can adapt the following variables to the correct locations for your setup:
-They are defaulted to the locations of the selfsigned variables!
-```yaml
-# Variables for ssl certs (defaults for selfsigned). Can be used to use signed certificates already stored on the server
-taskd_client_cert: "{{ taskd_data_location }}/client.cert.pem"
-taskd_client_key: "{{ taskd_data_location }}/client.key.pem"
-taskd_server_cert: "{{ taskd_data_location }}/server.cert.pem"
-taskd_server_key: "{{ taskd_data_location }}/server.key.pem"
-taskd_server_crl: "{{ taskd_data_location }}/server.crl.pem"
-taskd_ca_cert: "{{ taskd_data_location }}/ca.cert.pem"
 ```
 
 ## Dependencies

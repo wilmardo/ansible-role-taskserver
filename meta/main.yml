@@ -1,5 +1,6 @@
 ---
 galaxy_info:
+  role_name: taskserver
   author: wilmardo
   description: |
     Role to install the Taskwarrior taskserver (taskd).
