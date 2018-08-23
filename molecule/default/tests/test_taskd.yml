@@ -8,8 +8,8 @@ group:
     exists: true
 
 port:
-    tcp:53589:
-      listening: true
+  tcp:53589:
+    listening: true
 
 service:
   taskd:
