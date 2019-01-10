@@ -5,3 +5,15 @@
 - name: Include Distribution version specific variables
   include_vars: "{{ ansible_distribution }}.yml"
   when: ansible_distribution == 'Debian'
+
+- name: Check if taskd is installed
+  stat:
+    path: /usr/local/bin/taskd
+  register: taskd_installed
+
+- name: Register installed taskd version
+  command: /usr/local/bin/taskd --version
+  register: taskd_installed_version
+  changed_when: false
+  when: taskd_installed.stat.exists
+  
