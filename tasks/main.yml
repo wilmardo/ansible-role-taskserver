@@ -1,16 +1,5 @@
 ---
-- include_tasks: load-variables.yml
-
-- name: Check if taskd is installed
-  stat:
-    path: /usr/local/bin/taskd
-  register: taskd_installed
-
-- name: Register installed taskd version
-  command: /usr/local/bin/taskd --version
-  register: taskd_installed_version
-  changed_when: false
-  when: taskd_installed.stat.exists
+- include_tasks: init-variables.yml
 
 - include_tasks: install-taskd/main.yml
   when: (not taskd_installed.stat.exists) or
