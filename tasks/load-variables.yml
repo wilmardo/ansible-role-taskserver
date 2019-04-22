@@ -16,4 +16,3 @@
   register: taskd_installed_version
   changed_when: false
   when: taskd_installed.stat.exists
-  
